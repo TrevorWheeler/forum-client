@@ -27,6 +27,9 @@ async function addPost(event: any) {
       case 200:
         router.push({ name: 'root' });
         break;
+      case 400:
+        toast.error("Something went wrong.", { color: 'error' });
+        break;
       case 401:
         app.reset();
         break;
@@ -37,11 +40,13 @@ async function addPost(event: any) {
         toast.error("Something went wrong.", { color: 'error' });
         break;
       default:
-        router.push({ path: '/', });
+        app.reset();
         break;
     }
   } catch (e) {
     console.log(e);
+    toast.error("Something went wrong.", { color: 'error' });
+    app.reset();
   }
 }
 

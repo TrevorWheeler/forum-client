@@ -10,38 +10,43 @@ const app = useAppStore();
 const username: Ref<string> = ref("faker@faker.com");
 const password: Ref<string> = ref("123");
 const submit = async (event: any) => {
-  event.preventDefault();
-  const authenticationRequest = { username: username.value, password: password.value };
-  const response = await fetch(app.serverURL + "/auth/register", {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`
-    },
-    body: JSON.stringify(authenticationRequest)
-  });
+  try {
+    event.preventDefault();
+    const authenticationRequest = { username: username.value, password: password.value };
+    const response = await fetch(app.serverURL + "/auth/register", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify(authenticationRequest)
+    });
 
-  switch (response.status) {
-    case 200:
-      const token = await response.text();
-      localStorage.setItem("token", token);
-      router.push({ name: "root" });
-      break;
-    case 400:
-      toast.error("Username already taken.", { color: 'error' });
-      break;
-    case 401:
-      localStorage.removeItem('token');
-      router.push('/');
-      break;
-    case 404:
-      router.push({ path: '/404', });
-      break;
-    default:
-      router.push({ path: '/', });
-      break;
+    switch (response.status) {
+      case 200:
+        const token = await response.text();
+        localStorage.setItem("token", token);
+        router.push({ name: "root" });
+        break;
+      case 400:
+        toast.error("Username already taken.", { color: 'error' });
+        break;
+      case 401:
+        localStorage.removeItem('token');
+        router.push('/');
+        break;
+      case 404:
+        router.push({ path: '/404', });
+        break;
+      default:
+        router.push({ path: '/', });
+        break;
+    }
+  } catch (e) {
+    console.log(e);
+    toast.error("Something went wrong.", { color: 'error' });
+    app.reset();
   }
-
 };
 </script>
 

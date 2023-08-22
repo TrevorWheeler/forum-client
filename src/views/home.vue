@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref, computed, onMounted, onBeforeUnmount } from 'vue';
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 import { useAppStore } from '@/stores/app';
 const app = useAppStore();
 import router from '@/router';
@@ -8,7 +9,6 @@ import router from '@/router';
 onMounted(async () => {
   await getPosts();
 });
-
 
 
 async function getPosts() {
@@ -26,6 +26,9 @@ async function getPosts() {
         console.log(posts);
         app.posts = posts;
         break;
+      case 400:
+        toast.error("Something went wrong.", { color: 'error' });
+        break;
       case 401:
         localStorage.removeItem('token');
         router.push('/agreement');
@@ -36,7 +39,7 @@ async function getPosts() {
     }
   } catch (e) {
     console.log(e);
-    localStorage.removeItem('token');
+    app.reset();
   }
 }
 

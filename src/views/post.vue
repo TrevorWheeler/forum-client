@@ -36,8 +36,8 @@ async function getPost() {
     }
   } catch (e) {
     console.log(e);
-    localStorage.removeItem('token');
-    router.push('/');
+    toast.error("Something went wrong.", { color: 'error' });
+    app.reset();
   }
 }
 
