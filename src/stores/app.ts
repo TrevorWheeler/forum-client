@@ -26,7 +26,7 @@ export const useAppStore = defineStore('app', () => {
         return ''
       }
       const decoded: Token | null = jwtDecode(token)
-      return decoded ? decoded.username : ''
+      return decoded?.username ?? ''
     } catch (e) {
       console.error(e)
       return ''
@@ -39,7 +39,7 @@ export const useAppStore = defineStore('app', () => {
         return false
       }
       const decoded: Token | null = jwtDecode(token)
-      return decoded && decoded._id ? true : false
+      return decoded?._id ? true : false
     } catch (e) {
       return false
     }

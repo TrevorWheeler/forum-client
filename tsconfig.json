@@ -21,12 +21,8 @@
        "src/*"
       ]
      },
-    //  "composite": true,
-    //  "module": "ESNext",
-    //  "moduleResolution": "Bundler",
-    //  "types": ["node"]
   },
-  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue",     "vite.config.*",
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "vite.config.*",
   "vitest.config.*",
   "cypress.config.*",
   "nightwatch.conf.*",

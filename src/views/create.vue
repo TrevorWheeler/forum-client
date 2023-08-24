@@ -1,17 +1,57 @@
 <script setup lang="ts">
 import { ref, type Ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAppStore } from '@/stores/app';
-import { useToast } from "vue-toastification";
-const toast = useToast();
-const app = useAppStore();
 import { useRouter } from 'vue-router';
+import { useToast } from "vue-toastification";
+
+const app = useAppStore();
+const toast = useToast();
 const router = useRouter();
+
 const subject = ref("");
+
+
 const body = ref("");
+
+
+function validateSubject(): string | null {
+  if (subject.value.trim().length === 0) {
+    return "Subject required.";
+  } else if (subject.value.trim().length > 100) {
+    return "Subject cannot exceed 100 characters.";
+  } else {
+    return null;
+  }
+}
+
+
+function validateBody(): string | null {
+  if (body.value.trim().length === 0) {
+    return "body required.";
+  } else {
+    return null;
+  }
+}
+
+
+
 
 async function addPost(event: any) {
   try {
     event.preventDefault();
+
+
+    const subjectError = validateSubject();
+    const bodyError = validateBody();
+    console.log(bodyError);
+    console.log(subjectError ?? (() => bodyError));
+
+    if (subjectError || bodyError) {
+
+
+      toast.error(subjectError ?? bodyError, { color: 'error' });
+      return;
+    }
     const response = await fetch(app.serverURL + '/post/add', {
       method: 'POST',
       headers: {

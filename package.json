@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "forum-shared": "file:../forum-shared",
     "jwt-decode": "^3.1.2",
     "pinia": "^2.1.4",
     "universal-cookie": "^4.0.4",
