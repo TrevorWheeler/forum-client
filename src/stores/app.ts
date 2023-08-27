@@ -20,29 +20,31 @@ export const useAppStore = defineStore('app', () => {
   const post: Ref<any[]> = ref([])
 
   function getUsername(): string {
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        return ''
-      }
-      const decoded: Token | null = jwtDecode(token)
-      return decoded?.username ?? ''
-    } catch (e) {
-      console.error(e)
-      return ''
-    }
+    return 'steve'
+    // try {
+    //   const token = localStorage.getItem('token')
+    //   if (!token) {
+    //     return ''
+    //   }
+    //   const decoded: Token | null = jwtDecode(token)
+    //   return decoded?.username ?? ''
+    // } catch (e) {
+    //   console.error(e)
+    //   return ''
+    // }
   }
   function getIsAuthenticated(): boolean {
-    try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        return false
-      }
-      const decoded: Token | null = jwtDecode(token)
-      return decoded?._id ? true : false
-    } catch (e) {
-      return false
-    }
+    return true
+    // try {
+    //   const token = localStorage.getItem('token')
+    //   if (!token) {
+    //     return false
+    //   }
+    //   const decoded: Token | null = jwtDecode(token)
+    //   return decoded?._id ? true : false
+    // } catch (e) {
+    //   return false
+    // }
   }
 
   function logout() {

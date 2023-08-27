@@ -3,53 +3,36 @@ import { ref, type Ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
-
+import { type CreatePost, VCreatePost } from '@/utils/index';
+import { z } from 'zod';
 const app = useAppStore();
 const toast = useToast();
 const router = useRouter();
 
-const subject = ref("");
+const post: Ref<CreatePost> = ref({
+  subject: '', body: ''
+});
 
 
-const body = ref("");
 
 
-function validateSubject(): string | null {
-  if (subject.value.trim().length === 0) {
-    return "Subject required.";
-  } else if (subject.value.trim().length > 100) {
-    return "Subject cannot exceed 100 characters.";
-  } else {
-    return null;
+function validate(): boolean {
+  try {
+    VCreatePost.parse(post.value);
+    return true;
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      toast.error(e.issues[0].message, { color: 'error' });
+    }
+    return false;
   }
 }
-
-
-function validateBody(): string | null {
-  if (body.value.trim().length === 0) {
-    return "body required.";
-  } else {
-    return null;
-  }
-}
-
-
-
 
 async function addPost(event: any) {
   try {
     event.preventDefault();
-
-
-    const subjectError = validateSubject();
-    const bodyError = validateBody();
-    console.log(bodyError);
-    console.log(subjectError ?? (() => bodyError));
-
-    if (subjectError || bodyError) {
-
-
-      toast.error(subjectError ?? bodyError, { color: 'error' });
+    const isValid: boolean = validate();
+    if (!isValid) {
       return;
     }
     const response = await fetch(app.serverURL + '/post/add', {
@@ -58,9 +41,7 @@ async function addPost(event: any) {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        subject: subject.value, body: body.value
-      })
+      body: JSON.stringify(post.value)
     });
     console.log(response);
     switch (response.status) {
@@ -86,14 +67,8 @@ async function addPost(event: any) {
   } catch (e) {
     console.log(e);
     toast.error("Something went wrong.", { color: 'error' });
-    app.reset();
   }
 }
-
-
-
-
-
 
 </script>
 <template>
@@ -101,10 +76,10 @@ async function addPost(event: any) {
     <form class="grid" @submit="">
       <label for="title" class="text-white block h-0"> Subject </label>
       <input type="text" name="subject" placeholder="Subject" class="bg-darker p-2 text-white mb-2 h-[36px]"
-        v-model="subject" />
+        v-model="post.subject" />
       <label for="body" class="text-white block h-0">Content</label>
       <textarea name="body" rows="15" class="bg-darker p-2 mb-2 text-dark-lighter" placeholder="Body"
-        v-model="body"></textarea>
+        v-model="post.body"></textarea>
       <div class="grid justify-end">
         <button @click="addPost"
           class="flex-none grid h-[36px] items-center text-info font-semibold border border-info disabled:pointer-events-none disabled:text-dark-lighter rounded-sm px-2 hover:bg-info hover:bg-opacity-5">POST</button>

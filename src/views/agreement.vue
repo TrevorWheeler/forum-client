@@ -82,6 +82,7 @@ async function accept(event: any) {
 async function getUser() {
   try {
     const userResponse = await fetch("http://localhost:3000/auth/user");
+    console.log(userResponse);
     const token = await userResponse.text();
     localStorage.setItem("token", token);
     app.username = app.getUsername();

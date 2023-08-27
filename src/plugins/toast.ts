@@ -10,7 +10,7 @@ const ToastOptions: Options = {
   icon: false,
   closeButton: false,
   hideProgressBar: true,
-  timeout: 1000
+  timeout: 1700
 }
 
 export { Toast, ToastOptions }

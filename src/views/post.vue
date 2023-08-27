@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
+import { type ReplyPost, VReplyPost } from '@/utils/index';
 const app = useAppStore();
 import { useToast } from "vue-toastification";
 const toast = useToast();
 import { useRoute, useRouter } from 'vue-router';
+import type { SafeParseSuccess } from 'zod';
 const router = useRouter();
 const route = useRoute();
 const body = ref("");
@@ -15,6 +17,8 @@ onMounted(async () => {
 
 async function getPost() {
   try {
+
+
     const response = await fetch(app.serverURL + '/post/' + route.params.id, {
       method: 'GET',
       headers: {
@@ -44,6 +48,18 @@ async function getPost() {
 async function addReply(event: any) {
   try {
     event.preventDefault();
+
+
+
+
+    // const validate: any = VReplyPost.parse({
+    //   ref: posts.value[0]._id,
+    //   body: body.value
+    // });
+
+    // console.log(validate);
+
+
     const response = await fetch(app.serverURL + '/post/' + posts.value[0]._id + '/add', {
       method: 'POST',
       headers: {
@@ -51,7 +67,8 @@ async function addReply(event: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ref: posts.value[0]._id, body: body.value
+        ref: posts.value[0]._id,
+        body: body.value
       })
     });
     switch (response.status) {
