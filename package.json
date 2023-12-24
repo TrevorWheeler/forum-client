@@ -12,8 +12,10 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "joi": "^17.11.0",
     "jwt-decode": "^3.1.2",
     "pinia": "^2.1.4",
+    "tippy.js": "^6.3.7",
     "universal-cookie": "^4.0.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",

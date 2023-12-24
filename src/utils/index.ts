@@ -4,14 +4,15 @@ export interface User {
   username: string
   password: string
 }
+const mongoIdSchema = z.string().regex(/^[0-9a-f]{24}$/)
 
 export const VPost = z.object({
-  _id: z.string(),
+  _id: mongoIdSchema,
   num: z.number(),
   subject: z.string(),
-  userId: z.string(),
+  userId: mongoIdSchema,
   username: z.string(),
-  ref: z.string(),
+  ref: mongoIdSchema,
   body: z.string()
 })
 

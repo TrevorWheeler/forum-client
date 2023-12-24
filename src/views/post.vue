@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from 'vue';
 import { useAppStore } from '@/stores/app';
-import { type ReplyPost, VReplyPost } from '@/utils/index';
 const app = useAppStore();
+import { useValidate } from '@/utils/validate'
 import { useToast } from "vue-toastification";
 const toast = useToast();
 import { useRoute, useRouter } from 'vue-router';
-import type { SafeParseSuccess } from 'zod';
+import { type PostReply, postReplySchema } from '@/interfaces/Post'
+const validatePostReply = useValidate(postReplySchema)
 const router = useRouter();
 const route = useRoute();
 const body = ref("");
@@ -17,8 +18,6 @@ onMounted(async () => {
 
 async function getPost() {
   try {
-
-
     const response = await fetch(app.serverURL + '/post/' + route.params.id, {
       method: 'GET',
       headers: {
@@ -48,16 +47,11 @@ async function getPost() {
 async function addReply(event: any) {
   try {
     event.preventDefault();
-
-
-
-
-    // const validate: any = VReplyPost.parse({
-    //   ref: posts.value[0]._id,
-    //   body: body.value
-    // });
-
-    // console.log(validate);
+    const postReply: PostReply = {
+      ref: posts.value.length > 0 && posts.value[0]._id ? posts.value[0]._id : undefined,
+      body: body.value
+    }
+    validatePostReply(postReply);
 
 
     const response = await fetch(app.serverURL + '/post/' + posts.value[0]._id + '/add', {
@@ -89,8 +83,8 @@ async function addReply(event: any) {
         router.push({ path: '/', });
         break;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    console.error(e)
   }
 }
 
@@ -104,12 +98,13 @@ async function addReply(event: any) {
       <div class="leading-4">{{ post.body }}</div>
     </div>
     <div class="w-full ">
-      <form class="grid rounded-sm" @submit="">
+      <form class="grid rounded-sm" @submit="addReply">
+
         <label for="body" class="text-white block h-0">Content</label>
         <textarea name="body" rows="10" class="bg-darker p-2 mb-2 text-dark-lighter" placeholder="Reply"
           v-model="body"></textarea>
         <div class="grid justify-end">
-          <button @click="addReply"
+          <button type="submit"
             class="flex-none grid h-[36px] items-center text-info font-semibold border border-info disabled:pointer-events-none disabled:text-dark-lighter rounded-sm px-2 hover:bg-info hover:bg-opacity-5 min-w-[73px]">
             REPLY</button>
         </div>
@@ -117,4 +112,9 @@ async function addReply(event: any) {
     </div>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+/* svg {
+  width: 25px;
+  height: 100%;
+} */
+</style>
