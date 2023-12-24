@@ -10,45 +10,23 @@ const app = useAppStore();
 const router = useRouter();
 const username: Ref<string> = ref("faker@faker.com");
 const password: Ref<string> = ref("123");
+import { type Credentials, credentialsSchema } from '@/interfaces/User'
+import { useValidate } from '@/utils/validate';
+import useHttp from '@/utils/http';
+const http = useHttp()
+const validateCredentials = useValidate(credentialsSchema)
 const submit = async (event: any) => {
   try {
     event.preventDefault();
-    const authenticationRequest = { username: username.value, password: password.value };
-    const response = await fetch(app.serverURL + "/auth/signin", {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify(authenticationRequest)
-    });
-    switch (response.status) {
-      case 200:
-        const token = await response.text();
-        localStorage.setItem("token", token);
-        app.isAuthenticated = true;
-        toast("Authenticated");
-        router.push({ name: "root" });
-        break;
-      case 400:
-        toast.error("Something went wrong.", { color: 'error' });
-        break;
-      case 401:
-        localStorage.removeItem('token');
-        router.push('/');
-        break;
-      case 404:
-        router.push({ path: '/404', });
-        break;
-      case 500:
-        toast.error("Something went wrong.", { color: 'error' });
-        break;
-      default:
-        router.push({ path: '/', });
-        break;
-    }
+    const credentials: Credentials = { username: username.value, password: password.value };
+    validateCredentials(credentials)
+    const token: string = await http.post('auth/signin', credentials)
+    localStorage.setItem("token", token);
+    app.isAuthenticated = true;
+    toast("Authenticated");
+    router.push({ name: "root" });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     toast.error("Something went wrong.", { color: 'error' });
     app.reset();
   }

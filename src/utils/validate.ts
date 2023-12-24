@@ -26,6 +26,7 @@ interface CustomError {
 export function useValidate(schema: any) {
   const validate = (data: any) => {
     const result: CustomError = schema.validate(data)
+    console.log(result)
     if (result.error) {
       toast.error(result.error.details[0].message, { color: 'error' })
       throw new Error(result.error.details[0].message)

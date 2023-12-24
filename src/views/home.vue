@@ -5,46 +5,21 @@ const toast = useToast();
 import { useAppStore } from '@/stores/app';
 const app = useAppStore();
 import router from '@/router';
+import useHttp from '@/utils/http';
+
+const { get } = useHttp()
 
 onMounted(async () => {
   await getPosts();
 });
-
-
 async function getPosts() {
   try {
-    const response = await fetch(app.serverURL + '/post', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      },
-      body: null
-    });
-    switch (response.status) {
-      case 200:
-        const posts = await response.json();
-        console.log(posts);
-        app.posts = posts;
-        break;
-      case 400:
-        toast.error("Something went wrong.", { color: 'error' });
-        break;
-      case 401:
-        localStorage.removeItem('token');
-        router.push('/agreement');
-        break;
-      case 404:
-        router.push({ path: '/404', });
-        break;
-    }
+    app.posts = await get('post')
   } catch (e) {
     console.log(e);
     app.reset();
   }
 }
-
-
-
 async function getPost(id: string) {
   try {
     router.push({ name: 'post', params: { id } });
@@ -54,8 +29,6 @@ async function getPost(id: string) {
     router.push('/');
   }
 }
-
-
 function getDate(_id: string) {
   const timestamp = parseInt(_id.substring(0, 8), 16);
   const date = new Date(timestamp * 1000).toLocaleString('en-AU', {

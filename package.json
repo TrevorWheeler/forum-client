@@ -12,14 +12,18 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@bentoproject/youtube": "^1.2302271541.0",
     "joi": "^17.11.0",
     "jwt-decode": "^3.1.2",
+    "lite-youtube-embed": "^0.3.0",
     "pinia": "^2.1.4",
     "tippy.js": "^6.3.7",
     "universal-cookie": "^4.0.4",
     "vue": "^3.3.4",
+    "vue-plyr": "^7.0.0",
     "vue-router": "^4.2.4",
     "vue-toastification": "^2.0.0-rc.5",
+    "vue3-youtube": "^0.1.9",
     "zod": "^3.22.2"
   },
   "devDependencies": {

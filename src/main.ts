@@ -1,7 +1,7 @@
 import './assets/main.css'
 import { createApp } from 'vue'
 import App from './App.vue'
-
+import 'vue-plyr/dist/vue-plyr.css'
 // Plugins
 import { registerPlugins } from '@/plugins'
 import { setComposables } from './plugins/composables'

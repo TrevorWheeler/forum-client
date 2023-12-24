@@ -3,8 +3,9 @@ import { useAppStore } from '@/stores/app'
 const app = useAppStore()
 const toast = useToast()
 import { useRoute, useRouter } from 'vue-router'
-const router = useRouter()
-export function useHttp() {
+
+export default function useHttp() {
+  const router = useRouter()
   async function get(endpoint: string) {
     try {
       const response = await fetch(app.serverURL + '/' + endpoint, {
@@ -18,18 +19,21 @@ export function useHttp() {
       let result: any = null
       switch (response.status) {
         case 200:
-          result = await response.json()
+          result = JSON.parse(await response.text())
           break
         case 400:
           toast.error('Something went wrong.', { color: 'error' })
           break
         case 401:
           localStorage.removeItem('token')
-          router.push('/agreement')
+          router.push('/')
           app.reset()
           break
         case 404:
           router.push({ path: '/404' })
+          break
+        default:
+          app.reset()
           break
       }
       return result
@@ -41,6 +45,7 @@ export function useHttp() {
       app.reset()
     }
   }
+
   async function post(endpoint: string, data: any) {
     try {
       const response = await fetch(app.serverURL + '/' + endpoint, {
@@ -51,14 +56,15 @@ export function useHttp() {
         },
         body: JSON.stringify(data)
       })
+
       let result: any = null
       switch (response.status) {
         case 200:
-          result = await response.json()
+          result = JSON.parse(await response.text())
           break
         case 401:
           localStorage.removeItem('token')
-          router.push('/agreement')
+          router.push('/')
           break
         case 404:
           router.push({ path: '/404' })
@@ -72,9 +78,7 @@ export function useHttp() {
       }
       return result
     } catch (e) {
-      console.log(e)
-      toast.error('Something went wrong.', { color: 'error' })
-      app.reset()
+      return e
     }
   }
   return { get, post }
