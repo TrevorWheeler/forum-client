@@ -19,11 +19,14 @@
     "pinia": "^2.1.4",
     "tippy.js": "^6.3.7",
     "universal-cookie": "^4.0.4",
+    "uuid": "^9.0.1",
     "vue": "^3.3.4",
     "vue-plyr": "^7.0.0",
     "vue-router": "^4.2.4",
     "vue-toastification": "^2.0.0-rc.5",
+    "vue-tweet": "^2.0.2",
     "vue3-youtube": "^0.1.9",
+    "youtube-vue3": "^0.1.15",
     "zod": "^3.22.2"
   },
   "devDependencies": {

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref, computed } from 'vue';
 import { useAppStore } from '@/stores/app';
+import ImageUrl from '@/components/image/image_url.vue'
 const app = useAppStore();
 import { useToast } from "vue-toastification";
-import { MediaType } from '@/interfaces/Media'
+import { MediaType, MediaState } from '@/interfaces/Media'
 const toast = useToast();
 import { useRoute, useRouter } from 'vue-router';
 
@@ -14,7 +15,7 @@ const route = useRoute();
 const debounceTimer: Ref<any> = ref(null);
 const isValid: Ref<boolean> = ref(false)
 const youtube: Ref<any> = ref(null)
-const emit = defineEmits(['update:mediaType', 'update:url'])
+const emit = defineEmits(['update:mediaType', 'update:mediaState'])
 const youtubeEndpoint: Ref<string> = ref('')
 
 interface IProps {
@@ -27,75 +28,16 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 
 function setMediaType(mediaType: MediaType) {
-
   emit('update:mediaType', mediaType)
+  emit('update:mediaState', MediaState.EMPTY)
 }
 
-function youtubeParser(url: string) {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
-  const match = url.match(regExp)
-  return match && match[7].length === 11 ? match[7] : false
-}
 
 function twitterParser(url: string) {
   const regExp = /(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/
   const match = url.match(regExp)
   return match && match[4] ? match[4] : false
 }
-
-
-
-
-function onInputImage(e: any) {
-  emit('update:url', e.target.value);
-
-  if (debounceTimer.value !== null) {
-    clearTimeout(debounceTimer.value);
-  }
-  debounceTimer.value = setTimeout(async () => {
-    isValid.value = await validateImageUrl(e.target.value)
-  }, 500);
-}
-
-async function validateImageUrl(url: string) {
-
-  try {
-    const res = await fetch(url)
-    console.log(res)
-    const buff = await res.blob()
-    return buff.type.startsWith('image/')
-  } catch (e) {
-    console.log(e)
-    return false
-  }
-}
-
-function onInputYoutube(e: any) {
-
-  const youtubeId = youtubeParser(e.target.value)
-  console.log("#########")
-  console.log(youtubeId)
-
-  if (youtubeId) {
-    isValid.value = true
-    emit('update:url', youtubeId);
-    emit('update:url', e.target.value);
-  }
-
-
-
-}
-
-
-function onReady() {
-  console.log("onReady event")
-}
-
-
-function onYotubeError(e: any) {
-  emit('update:url', "");
-}
-
 
 
 </script>
@@ -148,45 +90,6 @@ function onYotubeError(e: any) {
       <input type="text" name="article" placeholder="Please add article via URL"
         class="bg-darker p-2 text-white mb-2 h-[36px]" />
     </div>
-
-    <div class="grid mb-2" v-if="mediaType === MediaType.IMAGE">
-      <label for="image" class="text-white block h-0"> Please add image via URL </label>
-      <input type="text" name="image" placeholder="Please add image via URL" @input="onInputImage"
-        class="bg-darker p-2 text-white mb-2 h-[36px]" />
-      <img v-if="isValid" :src="props.url" />
-      <div v-if="!isValid" class="w-[500px] h-[281px] bg-dark-light flex flex-col justify-center items-center">
-        <svg class="fill-dark-lighter" xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 -960 960 960"
-          width="100">
-          <path
-            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z" />
-        </svg>
-        <span class="block text-dark-lighter text-7xl pb-3">404</span>
-      </div>
-    </div>
-
-    <div class="grid mb-2" v-if="mediaType === MediaType.YOUTUBE">
-      <label for="image" class="text-white block h-0"> Please add youtube via URL </label>
-      <input type="text" name="image" placeholder="Please add image via URL" v-model="youtubeEndpoint"
-        @input="onInputYoutube" class="bg-darker p-2 text-white mb-2 h-[36px]" />
-
-      <div v-if="isValid">
-        <YouTube :src="'www.youtube.com/watch?v=' + url" @ready="onReady" @error="onYotubeError" ref="youtube" />
-      </div>
-      <!-- www.youtube.com/watch?v=bTqVqk7FSmY -->
-
-      <!-- <div v-if="!isValid" class="w-[500px] h-[281px] bg-dark-light flex flex-col justify-center items-center">
-        <svg class="fill-dark-lighter" xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 -960 960 960"
-          width="100">
-          <path
-            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z" />
-        </svg>
-        <span class="block text-dark-lighter text-7xl pb-3">404</span>
-      </div> -->
-    </div>
   </div>
 </template>
-<style scoped>
-img {
-  width: auto;
-}
-</style>
+<style scoped></style>

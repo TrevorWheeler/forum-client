@@ -11,7 +11,10 @@ const app = useAppStore();
 const toast = useToast();
 const router = useRouter();
 import useHttp from '@/utils/http';
-import { MediaType } from '@/interfaces/Media';
+import { MediaState, MediaType } from '@/interfaces/Media';
+import ImageUrl from '@/components/image/image_url.vue'
+import VideoUrl from '@/components/video/video_url.vue'
+import XUrl from '@/components/x/x_url.vue'
 const http = useHttp()
 
 const media: Ref<MediaType> = ref(MediaType.LINK)
@@ -19,6 +22,8 @@ const url: Ref<string> = ref('')
 
 const subject: Ref<string> = ref('')
 const body: Ref<string> = ref('')
+
+const mediaState: Ref<MediaState> = ref(MediaState.EMPTY)
 
 
 
@@ -40,23 +45,32 @@ async function createPost(event: any) {
   }
 }
 
+
+
+function setUrl(src: string) {
+  url.value = src
+}
 </script>
 <template>
   <div class="w-full p-2">
 
+    {{ media }} - {{ mediaState }}
     <form class="grid" @submit="createPost">
-      <MediaBar v-model:mediaType="media" v-model:url="url" />
+      <MediaBar v-model:mediaType="media" v-model:mediaState="mediaState" v-model:url="url" />
+      <ImageUrl v-if="media === MediaType.IMAGE" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
+      <XUrl v-if="media === MediaType.X" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
+
+      <VideoUrl v-if="media === MediaType.YOUTUBE" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
       <label for="subject" class="text-white block h-0"> Subject </label>
       <input type="text" name="subject" placeholder="Subject" class="bg-darker p-2 text-white mb-2 h-[36px]"
         v-model="subject" />
-
-
       <label for="body" class="text-white block h-0">Content</label>
       <textarea name="body" rows="15" class="bg-darker p-2 mb-2 text-dark-lighter" placeholder="Body"
         v-model="body"></textarea>
       <div class="grid justify-end">
         <button type="submit"
-          class="flex-none grid h-[36px] items-center text-info font-semibold border border-info disabled:pointer-events-none disabled:text-dark-lighter rounded-sm px-2 hover:bg-info hover:bg-opacity-5">POST</button>
+          class="grid h-[36px] min-w-20 items-center text-info font-semibold border border-info disabled:pointer-events-none disabled:text-dark-lighter rounded-sm px-2 hover:bg-info hover:bg-opacity-5">CREATE
+          POST</button>
       </div>
     </form>
   </div>

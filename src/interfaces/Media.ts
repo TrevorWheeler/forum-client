@@ -4,3 +4,10 @@ export enum MediaType {
   YOUTUBE = 'YOUTUBE',
   X = 'X'
 }
+
+export enum MediaState {
+  OK = 'OK',
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  EMPTY = 'EMPTY'
+}
