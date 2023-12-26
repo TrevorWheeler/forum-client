@@ -18,7 +18,6 @@ function onInput(e: Event) {
 
   const input = e.target as HTMLInputElement;
   if (!input.value) {
-    console.log("HIT")
     emit('update:mediaState', MediaState.EMPTY)
   } else {
     emit('update:mediaState', MediaState.LOADING)
@@ -46,8 +45,6 @@ function youtubeParser(url: string) {
 }
 
 function onLoad() {
-  console.log("LOADED")
-
   if (imageSource.value) {
     emit('update:mediaState', MediaState.OK)
     emit('update:url', imageSource.value);
@@ -66,8 +63,7 @@ function onError() {
 <template>
   <div class="grid">
     <label for="image" class="text-white block h-0"> Please add youtube via URL </label>
-    <input type="text" name="image" placeholder="Please add youtube via URL" @input="onInput"
-      class="bg-darker p-2 text-white mb-2 h-[36px]" />
+    <input type="text" name="image" placeholder="Please add youtube via URL" @input="onInput" />
     <Video :imageSource="imageSource" @error="onError" @load="onLoad" :mediaState="mediaState" />
   </div>
 </template>

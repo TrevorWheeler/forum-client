@@ -12,6 +12,7 @@ export interface Post {
 export interface PostCreate {
   subject: string
   media: string
+  url: string
   body: string
 }
 
@@ -23,6 +24,7 @@ export const postCreateSchema = Joi.object<PostCreate>({
     'string.max': `Subject should have a maximum length of {#limit}`,
     'any.required': `Subject is a required field`
   }),
+  url: Joi.string().required(),
   media: Joi.string().required(),
   body: Joi.string().required().min(10).messages({
     'string.base': `Body should be a type of 'text'`,

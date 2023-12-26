@@ -58,7 +58,6 @@ async function validateImageUrl(url: string) {
 }
 
 function onLoad() {
-  console.log("LOADED")
   emit('update:mediaState', MediaState.OK)
   emit('update:url', imageSource.value);
 }

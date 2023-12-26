@@ -27,18 +27,28 @@ const mediaState: Ref<MediaState> = ref(MediaState.EMPTY)
 
 
 
+
+
+
+
+
 async function createPost(event: any) {
   try {
     event.preventDefault();
     const postCreate: PostCreate = {
       subject: subject.value,
       body: body.value,
-      media: media.value
+      media: media.value,
+      url: url.value
     }
     validatePostCreate(postCreate)
-    const response = await http.post('post/add', postCreate)
 
+    console.log(postCreate)
+    const response = await http.post('post/add', postCreate)
+    console.log("###########")
     console.log(response)
+    console.log("###########")
+    router.push({ name: 'post', params: { id: response } });
     // router.push({ name: 'root' });
   } catch (e) {
     console.log(e);
@@ -47,20 +57,22 @@ async function createPost(event: any) {
 
 
 
-function setUrl(src: string) {
-  url.value = src
-}
 </script>
 <template>
   <div class="w-full p-2">
-
-    {{ media }} - {{ mediaState }}
+    <!-- {{ media }} - {{ mediaState }} -->
     <form class="grid" @submit="createPost">
       <MediaBar v-model:mediaType="media" v-model:mediaState="mediaState" v-model:url="url" />
       <ImageUrl v-if="media === MediaType.IMAGE" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
       <XUrl v-if="media === MediaType.X" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
-
       <VideoUrl v-if="media === MediaType.YOUTUBE" v-model:url="url" v-model:mediaState="mediaState" class="mb-2" />
+
+      <div class="grid" v-if="media === MediaType.LINK">
+        <label for="article" class="text-white block h-0"> Please add article via URL </label>
+        <input type="text" name="article" placeholder="Please add article via URL"
+          class="bg-darker p-2 text-white mb-2 h-[36px]" />
+      </div>
+
       <label for="subject" class="text-white block h-0"> Subject </label>
       <input type="text" name="subject" placeholder="Subject" class="bg-darker p-2 text-white mb-2 h-[36px]"
         v-model="subject" />

@@ -1,45 +1,17 @@
 <script setup lang="ts">
 import { onMounted, ref, type Ref, computed } from 'vue';
-import { useAppStore } from '@/stores/app';
-import ImageUrl from '@/components/image/image_url.vue'
-const app = useAppStore();
-import { useToast } from "vue-toastification";
 import { MediaType, MediaState } from '@/interfaces/Media'
-const toast = useToast();
-import { useRoute, useRouter } from 'vue-router';
-
-const router = useRouter();
-const route = useRoute();
-
-
-const debounceTimer: Ref<any> = ref(null);
-const isValid: Ref<boolean> = ref(false)
-const youtube: Ref<any> = ref(null)
 const emit = defineEmits(['update:mediaType', 'update:mediaState'])
-const youtubeEndpoint: Ref<string> = ref('')
-
 interface IProps {
   mediaType: MediaType;
-  url: string
 }
 const props = withDefaults(defineProps<IProps>(), {
   mediaType: MediaType.LINK,
-  url: ""
 });
-
 function setMediaType(mediaType: MediaType) {
   emit('update:mediaType', mediaType)
   emit('update:mediaState', MediaState.EMPTY)
 }
-
-
-function twitterParser(url: string) {
-  const regExp = /(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/
-  const match = url.match(regExp)
-  return match && match[4] ? match[4] : false
-}
-
-
 </script>
 
 <template>
@@ -84,11 +56,6 @@ function twitterParser(url: string) {
             d="M323.74 148.35h36.12l-78.91 90.2 92.83 122.73h-72.69l-56.93-74.43-65.15 74.43h-36.14l84.4-96.47-89.05-116.46h74.53l51.46 68.04 59.53-68.04zm-12.68 191.31h20.02l-129.2-170.82H180.4l130.66 170.82z" />
         </svg>
       </button>
-    </div>
-    <div class="grid" v-if="mediaType === MediaType.LINK">
-      <label for="article" class="text-white block h-0"> Please add article via URL </label>
-      <input type="text" name="article" placeholder="Please add article via URL"
-        class="bg-darker p-2 text-white mb-2 h-[36px]" />
     </div>
   </div>
 </template>

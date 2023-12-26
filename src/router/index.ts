@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/post/:id',
     name: 'post',
-    component: () => import('@/views/post.vue')
+    component: () => import('@/views/thread.vue')
   },
   { path: '/:catchAll(.*)*', name: '404', component: () => import('@/views/unknown.vue') }
 ]

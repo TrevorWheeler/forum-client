@@ -4,12 +4,18 @@ import Nav from '@/components/Nav.vue';
 import { onMounted } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { useRouter } from 'vue-router';
-
+import { loadScript } from '@/utils/loadScript'
 const router = useRouter();
 const appStore = useAppStore();
 
 onMounted(async () => {
+  // let XWigetscript = document.createElement('script')
+  // XWigetscript.setAttribute('src', 'https://platform.twitter.com/widgets.js')
+  // document.head.appendChild(XWigetscript)
 
+  // loadScript('https://platform.twitter.com/widgets.js').then(() => {
+  //   console.log("LOADED")
+  // })
 });
 
 

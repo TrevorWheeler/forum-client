@@ -7,6 +7,7 @@ import { MediaType, MediaState } from '@/interfaces/Media'
 const toast = useToast();
 const emit = defineEmits(['error', 'load'])
 import Tweet from "vue-tweet";
+import { loadScript } from '@/utils/loadScript';
 interface IProps {
   imageSource: string,
   mediaState: MediaState
@@ -15,54 +16,32 @@ const props = withDefaults(defineProps<IProps>(), {
   imageSource: "",
   mediaState: MediaState.LOADING
 });
-const isHidingWhileLoading = ref(false);
 
 
-watch(() => props.mediaState, (mediaState: MediaState) => {
-  if (mediaState === MediaState.LOADING) {
-    isHidingWhileLoading.value = true
-  } else {
-    isHidingWhileLoading.value = false;
-  }
-});
 
-
-// If Tweet dependency is deprecated:
-// onMounted(() => {
-//   loadTwitterScript()
-// });
-// function loadTwitterScript() {
-//   if (!(window as any).twttr) {
-//     const script = document.createElement('script');
-//     script.src = 'https://platform.twitter.com/widgets.js';
-//     script.async = true;
-//     document.head.appendChild(script);
-
-//     script.onload = () => {
-//       if ((window as any).twttr && (window as any).twttr.widgets) {
-//         (window as any).twttr.widgets.load();
-//       }
-//     };
-//   } else {
-//     (window as any).twttr.widgets.load();
+// onMounted(async () => {
+//   try {
+//     if (!window.twttr) {
+//       loadScript('https://platform.twitter.com/widgets.js').then(() => {
+//         emit('load')
+//       }).catch(() => {
+//         emit('error')
+//       });
+//     } else {
+//       window.twttr.widgets.load();
+//       emit('load')
+//     }
+//   } catch (error) {
+//     emit('error')
 //   }
-// }
-//     <blockquote class="twitter-tweet">
-//       <p lang="en" dir="ltr">At dawn from the gateway to Mars, the launch of Starship’s second flight test <a
-//           href="https://t.co/ffKnsVKwG4">pic.twitter.com/ffKnsVKwG4</a></p>&mdash; SpaceX (@SpaceX) <a
-//         href="https://twitter.com/SpaceX/status/1530240085807054848">December 7, 2023</a>
-//     </blockquote>
+// });
+
 </script>
 <template>
   <div>
-    <!-- 1732824684683784516 -->
-    <Tweet tweet-id="1530240085807054848" theme="dark" />
-
-
-
-
-    <!-- <YoutubePlayer :videoId="imageSource" @error="emit('error')" @ready="emit('load')"
-      :class="{ 'hide-image': props.mediaState == MediaState.LOADING }" />
+    <Tweet v-if="mediaState === MediaState.OK" :tweet-id="props.imageSource" theme="dark"
+      @tweet-load-success="emit('load')" @tweet-load-error=" emit('error')">
+    </Tweet>
     <div v-if="props.mediaState === MediaState.LOADING" class="card bg-darker">
       <div class="loading-animation "></div>
     </div>
@@ -72,7 +51,7 @@ watch(() => props.mediaState, (mediaState: MediaState) => {
         <path
           d="m770-302-60-62q40-11 65-42.5t25-73.5q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 57-29.5 105T770-302ZM634-440l-80-80h86v80h-6ZM792-56 56-792l56-56 736 736-56 56ZM440-280H280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h65l79 80H320Z" />
       </svg>
-    </div> -->
+    </div>
   </div>
 </template>
 <style scoped>

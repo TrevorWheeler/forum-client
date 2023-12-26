@@ -20,7 +20,7 @@ function onInput(e: Event) {
     emit('update:mediaState', MediaState.EMPTY)
   } else {
     emit('update:mediaState', MediaState.LOADING)
-    const youtubeId = youtubeParser(input.value)
+    const youtubeId = twitterParser(input.value)
     if (!youtubeId) {
       imageSource.value = ''
     }
@@ -37,16 +37,20 @@ function onInput(e: Event) {
   }
 }
 
-function youtubeParser(url: string) {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
+function twitterParser(url: string) {
+  const regExp = /(^|[^'"])(https?:\/\/twitter\.com\/(?:#!\/)?(\w+)\/status(?:es)?\/(\d+))/
   const match = url.match(regExp)
-  return match && match[7].length === 11 ? match[7] : false
+  return match && match[4] ? match[4] : false
 }
+
+
 
 function onLoad() {
   console.log("LOADED")
-  emit('update:mediaState', MediaState.OK)
-  emit('update:url', imageSource.value);
+  if (imageSource.value) {
+    emit('update:mediaState', MediaState.OK)
+    emit('update:url', imageSource.value);
+  }
 }
 
 function onError() {

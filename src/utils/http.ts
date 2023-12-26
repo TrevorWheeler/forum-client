@@ -15,11 +15,15 @@ export default function useHttp() {
         },
         body: null
       })
-      console.log(response)
       let result: any = null
       switch (response.status) {
         case 200:
-          result = JSON.parse(await response.text())
+          const text = await response.text()
+          try {
+            result = JSON.parse(text)
+          } catch (e) {
+            result = text
+          }
           break
         case 400:
           toast.error('Something went wrong.', { color: 'error' })
@@ -36,6 +40,10 @@ export default function useHttp() {
           app.reset()
           break
       }
+
+      console.log('------------- GET - ' + app.serverURL + '/' + endpoint + ' -------------')
+      console.log(result)
+      console.log('---------------------------------------------------------------------')
       return result
     } catch (e) {
       console.error(e)
@@ -60,7 +68,12 @@ export default function useHttp() {
       let result: any = null
       switch (response.status) {
         case 200:
-          result = JSON.parse(await response.text())
+          const text = await response.text()
+          try {
+            result = JSON.parse(text)
+          } catch (e) {
+            result = text
+          }
           break
         case 401:
           localStorage.removeItem('token')
@@ -76,6 +89,11 @@ export default function useHttp() {
           router.push({ path: '/' })
           break
       }
+
+      console.log('------------- POST - url:' + app.serverURL + '/' + endpoint + ' -------------')
+      console.log(data)
+      console.log(result)
+      console.log('-------------------------------------------------------------------------')
       return result
     } catch (e) {
       return e

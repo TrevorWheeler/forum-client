@@ -6,11 +6,9 @@ import { useToast } from "vue-toastification";
 import { MediaType, MediaState } from '@/interfaces/Media'
 const toast = useToast();
 import { v4 as uuidv4 } from 'uuid';
-// import YoutubePlayer from '@/components/youtube_player.vue'
-import YouTube from 'vue3-youtube'
+import { loadScript } from '@/utils/loadScript';
 // import YouTube from 'vue3-youtube'
 const emit = defineEmits(['error', 'load'])
-import { YoutubeVue3 } from 'youtube-vue3'
 interface IProps {
   imageSource: string,
   mediaState: MediaState
@@ -20,52 +18,35 @@ const props = withDefaults(defineProps<IProps>(), {
   mediaState: MediaState.LOADING
 });
 
-const youtube = ref(null)
-// const isHidingWhileLoading = ref(false);
-// const imageId: string = uuidv4().replace(/-/g, '');
+const youtube: any = ref(null)
+
+const imageId: string = uuidv4().replace(/-/g, '');
 
 
-// watch(() => props.mediaState, (mediaState: MediaState) => {
-//   if (mediaState === MediaState.LOADING) {
-//     isHidingWhileLoading.value = true
-//   } else {
-//     isHidingWhileLoading.value = false;
-//   }
-// });
-
-
+onMounted(() => {
+  if (!window.YT) {
+    loadScript('https://www.youtube.com/iframe_api').then(() => {
+      emit('load')
+    }).catch(() => {
+      emit('error')
+    });
+  } else {
+    console.log("ALREADY LOADED")
+    emit('load')
+  }
+});
 
 </script>
 <template>
   <div>
-
-    <!-- <YoutubePlayer :videoId="imageSource" @error="emit('error')" @ready="emit('load')"
-      :class="{ 'hide-image': props.mediaState == MediaState.LOADING }" /> -->
-    <!-- {{ props.imageSource }} -->
-    <!-- {{ !imageSource }} -->
-
-    <!-- <YoutubeVue3 :class="{ 'hide-image': props.mediaState == MediaState.LOADING || !imageSource }" ref="youtube"
-      :videoid="imageSource" :loop="0" :width="560" :height="315" @ended="null" @paused="null" @played="null"
-      @ready="emit('load')" @error="emit('error')" /> -->
-    <!-- <div
-      :class="{ 'hide-image': props.mediaState == MediaState.LOADING || !imageSource || props.mediaState == MediaState.EMPTY }">
-      <YoutubeVue3 ref="youtube" :videoid="imageSource" :loop="0" :width="560" :height="315" @ended="null" @paused="null"
-        @played="null" @ready="emit('load')" @error="emit('error')" />
-    </div> -->
-
-
-    <YouTube :src="imageSource" :class="{ 'hide-image': props.mediaState === MediaState.LOADING || !props.imageSource }"
-      @ready="emit('load')" @error="emit('error')" :vars="{ autoplay: 0 }" ref="youtube" />
-
-    <!-- <iframe width="560" height="315" :src="'https://www.youtube.com/embed/' + imageSource" frameborder="0"
-      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-    </iframe> -->
-
+    <iframe ref="youtube" v-show="props.mediaState === MediaState.OK || props.mediaState === MediaState.ERROR"
+      id="existing-iframe-example" width="640" height="360" fullscreen autoplay="0"
+      allow="accelerometer; encrypted-media; gyroscope;"
+      :src="'http://www.youtube.com/embed/' + imageSource + '?enablejsapi=1'" frameborder="0"></iframe>
     <div v-if="props.mediaState === MediaState.LOADING" class="card bg-darker">
       <div class="loading-animation "></div>
     </div>
-    <div class="card  bg-dark-light"
-      v-if="props.mediaState === MediaState.ERROR || props.mediaState === MediaState.EMPTY">
+    <div class="card  bg-dark-light" v-if="props.mediaState === MediaState.EMPTY">
       <svg class="fill-dark-lighter" xmlns="http://www.w3.org/2000/svg" height="100" viewBox="0 -960 960 960" width="100">
         <path
           d="m770-302-60-62q40-11 65-42.5t25-73.5q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 57-29.5 105T770-302ZM634-440l-80-80h86v80h-6ZM792-56 56-792l56-56 736 736-56 56ZM440-280H280q-83 0-141.5-58.5T80-480q0-69 42-123t108-71l74 74h-24q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h65l79 80H320Z" />
@@ -112,6 +93,5 @@ const youtube = ref(null)
 
 img.error {
   border: 1px solid red;
-  /* other error-specific styles */
 }
 </style>
