@@ -40,7 +40,6 @@ export default function useHttp() {
           app.reset()
           break
       }
-
       console.log('------------- GET - ' + app.serverURL + '/' + endpoint + ' -------------')
       console.log(result)
       console.log('---------------------------------------------------------------------')
@@ -49,7 +48,6 @@ export default function useHttp() {
       console.error(e)
       toast.error('Something went wrong.', { color: 'error' })
       localStorage.removeItem('token')
-      router.push('/agreement')
       app.reset()
     }
   }
@@ -89,7 +87,6 @@ export default function useHttp() {
           router.push({ path: '/' })
           break
       }
-
       console.log('------------- POST - url:' + app.serverURL + '/' + endpoint + ' -------------')
       console.log(data)
       console.log(result)

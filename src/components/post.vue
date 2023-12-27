@@ -6,7 +6,7 @@ import { useValidate } from '@/utils/validate'
 import { useToast } from "vue-toastification";
 const toast = useToast();
 import { useRoute, useRouter } from 'vue-router';
-import { type PostReply, postReplySchema } from '@/interfaces/Post'
+import { type PostReply, postReplySchema, type Post } from '@/interfaces/Post'
 import { MediaState, MediaType } from '@/interfaces/Media';
 import ImageUrl from '@/components/image/image_url.vue'
 import VideoUrl from '@/components/video/video_url.vue'
@@ -18,7 +18,16 @@ const router = useRouter();
 const route = useRoute();
 const body = ref("");
 const posts: Ref<any> = ref([]);
-const mediaState: Ref<MediaState> = ref(MediaState.OK)
+const mediaState: Ref<MediaState> = ref(MediaState.LOADING)
+
+interface IProps {
+  post: Post | null,
+
+}
+const props = withDefaults(defineProps<IProps>(), {
+  post: null,
+});
+
 onMounted(async () => {
   await getPost();
 });
@@ -46,9 +55,6 @@ async function addReply(event: Event) {
     validatePostReply(postReply);
     const response = await http.post('post/' + route.params.id + '/add', postReply)
     posts.value.push(response)
-
-
-    body.value = "";
   } catch (e: unknown) {
     console.error(e)
     toast.error("Failed to add reply. Please try again.", { color: 'error' });
@@ -59,38 +65,20 @@ async function addReply(event: Event) {
 </script>
 
 <template>
-  <div class="w-full p-2">
-    <div v-for="(post, i) of posts">
-      <Video v-if="post.media === MediaType.YOUTUBE" :imageSource="post.url" :mediaState="mediaState" class="mb-2" />
-      <X v-if="post.media === MediaType.X" :imageSource="post.url" :mediaState="mediaState" class="mb-2" />
-      <div class="p-2 mb-2 bg-dark-light p-1 text-white rounded-sm">
-        <div class="whitespace-nowrap text-sm font-thin leading-3 mb-1">{{ post.username }}</div>
+  <div class="w-full p-2" v-if="post">
+    <Video v-if="post.media === MediaType.YOUTUBE" :imageSource="post.url" :mediaState="mediaState" class="mb-2" />
+    <X v-if="post.media === MediaType.X" :imageSource="post.url" :mediaState="mediaState" />
+    <div class="p-2 mb-2 bg-dark-light p-1 text-white rounded-sm">
+      <div class="whitespace-nowrap text-sm font-thin leading-3 mb-1">{{ post.username }}</div>
 
 
-        <!-- <ImageUrl v-if="post.media === MediaType.IMAGE" v-model:url="post.url" v-model:mediaState="mediaState"
+      <!-- <ImageUrl v-if="post.media === MediaType.IMAGE" v-model:url="post.url" v-model:mediaState="mediaState"
         class="mb-2" />
       <XUrl v-if="post.media === MediaType.X" v-model:url="post.url" v-model:mediaState="mediaState" class="mb-2" />
       <VideoUrl v-if="post.media === MediaType.YOUTUBE" v-model:url="post.url" v-model:mediaState="mediaState"
         class="mb-2" /> -->
 
-        <div class="leading-4">{{ post.body }}</div>
-      </div>
-    </div>
-
-
-
-
-    <div class="w-full ">
-      <form class="grid rounded-sm" @submit="addReply">
-        <label for="body" class="text-white block h-0">Content</label>
-        <textarea name="body" rows="10" class="bg-darker p-2 mb-2 text-dark-lighter" placeholder="Reply"
-          v-model="body"></textarea>
-        <div class="grid justify-end">
-          <button type="submit"
-            class="flex-none grid h-[36px] items-center text-info font-semibold border border-info disabled:pointer-events-none disabled:text-dark-lighter rounded-sm px-2 hover:bg-info hover:bg-opacity-5 min-w-[73px]">
-            REPLY</button>
-        </div>
-      </form>
+      <div class="leading-4">{{ post.body }}</div>
     </div>
   </div>
 </template>

@@ -7,6 +7,8 @@ export interface Post {
   username?: string
   ref?: string
   body: string
+  media: string
+  url: string
 }
 
 export interface PostCreate {
