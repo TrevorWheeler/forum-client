@@ -32,6 +32,9 @@ const mediaState: Ref<MediaState> = ref(MediaState.EMPTY)
 
 
 
+
+
+
 async function createPost(event: any) {
   try {
     event.preventDefault();
@@ -42,14 +45,10 @@ async function createPost(event: any) {
       url: url.value
     }
     validatePostCreate(postCreate)
-
     console.log(postCreate)
     const response = await http.post('post/add', postCreate)
-    console.log("###########")
     console.log(response)
-    console.log("###########")
     router.push({ name: 'post', params: { id: response } });
-    // router.push({ name: 'root' });
   } catch (e) {
     console.log(e);
   }

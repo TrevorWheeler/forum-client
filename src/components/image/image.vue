@@ -1,11 +1,10 @@
 <script setup lang="ts">
+// import { v4 as uuidv4 } from 'uuid';
+// const imageId: string = uuidv4().replace(/-/g, '');
 import { onMounted, ref, type Ref, computed, watch } from 'vue';
-import { useAppStore } from '@/stores/app';
-const app = useAppStore();
-import { useToast } from "vue-toastification";
-import { MediaType, MediaState } from '@/interfaces/Media'
-const toast = useToast();
-import { v4 as uuidv4 } from 'uuid';
+
+import { MediaState } from '@/interfaces/Media'
+
 
 const emit = defineEmits(['error', 'load'])
 
@@ -16,17 +15,6 @@ interface IProps {
 const props = withDefaults(defineProps<IProps>(), {
   imageSource: "",
   mediaState: MediaState.LOADING
-});
-const isHidingWhileLoading = ref(false);
-const imageId: string = uuidv4().replace(/-/g, '');
-
-
-watch(() => props.mediaState, (mediaState: MediaState) => {
-  if (mediaState === MediaState.LOADING) {
-    isHidingWhileLoading.value = true
-  } else {
-    isHidingWhileLoading.value = false;
-  }
 });
 
 </script>

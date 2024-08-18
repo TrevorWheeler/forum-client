@@ -17,14 +17,9 @@ const props = withDefaults(defineProps<IProps>(), {
   mediaState: MediaState.LOADING
 });
 
-function onLoad() {
-  console.log("LOAD")
-}
-
-
 </script>
 <template>
-  <div>
+  <div class="container">
     <Tweet v-if="mediaState === MediaState.OK" :tweet-id="props.imageSource" theme="dark"
       @tweet-load-success="emit('load')" @tweet-load-error=" emit('error')">
     </Tweet>
@@ -65,21 +60,34 @@ img {
   object-fit: contain; */
 }
 
+.container {
+  max-height: 775px;
+  max-width: 548px;
+  background-color: #15202b;
+  border-radius: 12px;
+  overflow: hidden;
+  /* border: 1px solid rgb(66, 83, 100); */
+}
+
 .card {
-  height: 775px;
-  width: 548px;
+  height: 100%;
+  width: 100%;
   /* aspect-ratio: auto 16/9; */
   overflow: hidden;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #15202b;
 }
+
+
+
 
 .loading-animation {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, #2a2a2a 8%, #3a3a3a 18%, #2a2a2a 33%);
+  /* background: linear-gradient(to right, #2a2a2a 8%, #3a3a3a 18%, #2a2a2a 33%); */
   position: absolute;
   animation: loading 1.5s infinite;
 }

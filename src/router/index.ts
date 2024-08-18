@@ -49,12 +49,7 @@ const router = createRouter({
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   window.document.title = app().siteName as string
   console.log('Route -> ' + from.name?.toString() + ' ' + to.name?.toString())
-  if (
-    !app().username &&
-    to.name?.toString() !== 'agreement' &&
-    to.name?.toString() !== 'login' &&
-    to.name?.toString() !== 'register'
-  ) {
+  if (!app().username && to.name?.toString() !== 'login' && to.name?.toString() !== 'register') {
     router.push('/agreement')
   }
   return true

@@ -189,42 +189,6 @@ async function getUser() {
     console.log(e);
   }
 
-  //   Explicit Jurisdiction and Governing Law:
-
-  // Add a clause specifying that any disputes will be governed by Australian law and that the courts of a specific Australian state or territory will have exclusive jurisdiction. This is crucial for international platforms.
-  // Clarification of Service Provider Role:
-
-  // Include a statement clarifying that the forum acts as a platform provider and is not the publisher of user-generated content. This helps in delineating responsibility for content.
-  // Disclaimer of Liability for Third-Party Links:
-
-  // If users can post links, include a disclaimer stating that the forum is not responsible for the content of external sites.
-  // Limitation of Liability:
-
-  // Clearly state the limits of your liability, including any limitations on the types of damages for which you can be held responsible and a cap on potential damages if permissible under Australian law.
-  // Prohibition of Illegal Activity:
-
-  // Explicitly state that users must not use the platform for any illegal activities, and clarify that any such use will result in immediate termination of access and potential legal action.
-  // Data Protection and Privacy:
-
-  // Ensure you have a robust privacy policy that complies with the Australian Privacy Principles (APPs) and any relevant international data protection laws (like GDPR if applicable).
-  // Reporting and Response Mechanism:
-
-  // Include a mechanism for users to report illegal or infringing content and outline your process for responding to these reports.
-  // User Responsibilities and Warranties:
-
-  // Users should warrant that they have the right to post their content and that such content does not infringe on any third-party rights.
-  // Force Majeure:
-
-  // Include a force majeure clause absolving either party from liability or obligation in the event of circumstances beyond their control.
-  // Termination and Suspension of Accounts:
-
-  // Outline the conditions under which a user’s account can be suspended or terminated and the process for doing so.
-  // Notification of Security Breaches:
-
-  // Commit to notifying users in the event of a security breach that may impact their data.
-  // Arbitration Clause (if applicable):
-
-  // Consider adding an arbitration clause as an alternative dispute resolution mechanism.
 }
 
 </script>

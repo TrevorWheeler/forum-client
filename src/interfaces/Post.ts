@@ -1,25 +1,26 @@
 import Joi from 'joi'
+import type { MediaType } from './Media'
 export interface Post {
-  _id?: string
+  _id: string
   num?: number
   subject: string
   userId?: string
   username?: string
   ref?: string
   body: string
-  media: string
+  media: MediaType
   url: string
 }
 
 export interface PostCreate {
   subject: string
-  media: string
+  media: MediaType
   url: string
   body: string
 }
 
 export const postCreateSchema = Joi.object<PostCreate>({
-  subject: Joi.string().required().min(3).max(100).messages({
+  subject: Joi.string().required().min(1).max(100).messages({
     'string.base': `Subject should be a type of 'text'`,
     'string.empty': `Subject cannot be an empty field`,
     'string.min': `Subject should have a minimum length of {#limit}`,
@@ -28,7 +29,7 @@ export const postCreateSchema = Joi.object<PostCreate>({
   }),
   url: Joi.string().required(),
   media: Joi.string().required(),
-  body: Joi.string().required().min(10).messages({
+  body: Joi.string().required().min(1).messages({
     'string.base': `Body should be a type of 'text'`,
     'string.empty': `Body cannot be an empty field`,
     'string.min': `Body should have a minimum length of {#limit}`,
@@ -40,7 +41,7 @@ export const postValidation = Joi.object({
   _id: Joi.string().hex().length(24).optional(),
   // post number - incremented on DB save
   num: Joi.number().optional(),
-  subject: Joi.string().min(2).max(100).required().messages({
+  subject: Joi.string().min(1).max(100).required().messages({
     'string.base': `"subject" should be a type of 'text'`,
     'string.empty': `"subject" cannot be an empty field`,
     'string.min': `"subject" should have a minimum length of {#limit}`,
@@ -68,7 +69,7 @@ export const postReplySchema = Joi.object({
     'string.base': `Sorry, something went wrong.`
   }),
   // The content body of the post.
-  body: Joi.string().min(10).messages({
+  body: Joi.string().min(1).messages({
     'string.base': `Sorry, something went wrong.`,
     'string.empty': `Reply content body cannot be empty`,
     'string.min': `Reply content body should have a minimum length of {#limit}`
